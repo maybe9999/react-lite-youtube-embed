@@ -15,6 +15,10 @@ export interface LiteYouTubeProps {
   adNetwork?: boolean;
   aspectHeight?: number;
   aspectWidth?: number;
+  aspectButtonH?: number;
+  aspectButtonW?: number;
+  sizeButton?:number;
+  sizeButtonTriangle?:number;
   iframeClass?: string;
   noCookie?: boolean;
   cookie?: boolean;
@@ -32,6 +36,13 @@ export interface LiteYouTubeProps {
   containerElement?: keyof JSX.IntrinsicElements;
   style?: React.CSSProperties;
 }
+
+type CustomStyles = {
+  '--aspect-ratio': string;
+  '--aspect-button'?: string;
+  '--size-button'?: string;
+  '--size-tutton-triangle'?: string;
+};
 
 function LiteYouTubeEmbedComponent(props: LiteYouTubeProps, ref: React.Ref<HTMLIFrameElement>) {
   const [preconnected, setPreconnected] = React.useState(false);
@@ -64,6 +75,10 @@ function LiteYouTubeEmbedComponent(props: LiteYouTubeProps, ref: React.Ref<HTMLI
   const adNetworkImp = props.adNetwork || false;
   const aspectHeight = props.aspectHeight || 9;
   const aspectWidth = props.aspectWidth || 16;
+  const aspectButtonH = props.aspectButtonH || 6;
+  const aspectButtonW = props.aspectButtonW || 3;
+  const sizeButton = props.sizeButton || 13;
+  const sizeButtonTriangle = props.sizeButtonTriangle || 23;
   const iframeClassImp = props.iframeClass || "";
   const playerClassImp = props.playerClass || "lty-playbtn";
   const wrapperClassImp = props.wrapperClass || "yt-lite";
@@ -76,6 +91,24 @@ function LiteYouTubeEmbedComponent(props: LiteYouTubeProps, ref: React.Ref<HTMLI
     if (preconnected) return;
     setPreconnected(true);
   };
+  
+  const dinamicStyles = (): CustomStyles => {
+    let styles: CustomStyles = {
+      '--aspect-ratio': `${(aspectHeight / aspectWidth) * 100}%`
+    };
+  
+    styles = {
+      ...styles, // Mantén los estilos previos
+      ...(playerClassImp === "lty-playbtn-YT" ? {
+        '--aspect-button': `${aspectButtonH} / ${aspectButtonW}`,
+        '--size-button': `${sizeButton}%`,
+        '--size-tutton-triangle': `${sizeButtonTriangle}%`
+      } : {})
+    };
+  
+    return styles;
+  };
+  
 
   const addIframe = () => {
     if (iframe) return;
@@ -120,7 +153,7 @@ function LiteYouTubeEmbedComponent(props: LiteYouTubeProps, ref: React.Ref<HTMLI
         style={{
           backgroundImage: `url(${posterUrl})`,
           ...({
-            '--aspect-ratio': `${(aspectHeight / aspectWidth) * 100}%`,
+            ...(dinamicStyles())
           } as React.CSSProperties),
           ...style,
         }}

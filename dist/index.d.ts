@@ -8,6 +8,10 @@ export interface LiteYouTubeProps {
     adNetwork?: boolean;
     aspectHeight?: number;
     aspectWidth?: number;
+    aspectButtonH?: number;
+    aspectButtonW?: number;
+    sizeButton?: number;
+    sizeButtonTriangle?: number;
     iframeClass?: string;
     noCookie?: boolean;
     cookie?: boolean;
@@ -23,6 +27,7 @@ export interface LiteYouTubeProps {
     thumbnail?: string;
     rel?: string;
     containerElement?: keyof JSX.IntrinsicElements;
+    style?: React.CSSProperties;
 }
 declare const _default: React.ForwardRefExoticComponent<LiteYouTubeProps & React.RefAttributes<HTMLIFrameElement>>;
 export default _default;

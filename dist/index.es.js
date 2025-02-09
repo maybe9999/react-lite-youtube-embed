@@ -11,7 +11,7 @@
 */
     import * as React from 'react';
 
-/*! *****************************************************************************
+/******************************************************************************
 Copyright (c) Microsoft Corporation.
 
 Permission to use, copy, modify, and/or distribute this software for any
@@ -27,14 +27,19 @@ PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
 var __assign = function() {
-    __assign = Object.assign || function __assign(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
+  __assign = Object.assign || function __assign(t) {
+      for (var s, i = 1, n = arguments.length; i < n; i++) {
+          s = arguments[i];
+          for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+      }
+      return t;
+  };
+  return __assign.apply(this, arguments);
+};
+
+typeof SuppressedError === "function" ? SuppressedError : function (error, suppressed, message) {
+  var e = new Error(message);
+  return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
 function LiteYouTubeEmbedComponent(props, ref) {
@@ -65,16 +70,32 @@ function LiteYouTubeEmbedComponent(props, ref) {
     var adNetworkImp = props.adNetwork || false;
     var aspectHeight = props.aspectHeight || 9;
     var aspectWidth = props.aspectWidth || 16;
+    var aspectButtonH = props.aspectButtonH || 6;
+    var aspectButtonW = props.aspectButtonW || 3;
+    var sizeButton = props.sizeButton || 13;
+    var sizeButtonTriangle = props.sizeButtonTriangle || 23;
     var iframeClassImp = props.iframeClass || "";
     var playerClassImp = props.playerClass || "lty-playbtn";
     var wrapperClassImp = props.wrapperClass || "yt-lite";
     var onIframeAdded = props.onIframeAdded || function () { };
     var rel = props.rel ? 'prefetch' : 'preload';
     var ContainerElement = props.containerElement || 'article';
+    var style = props.style || {};
     var warmConnections = function () {
         if (preconnected)
             return;
         setPreconnected(true);
+    };
+    var dinamicStyles = function () {
+        var styles = {
+            '--aspect-ratio': "".concat((aspectHeight / aspectWidth) * 100, "%")
+        };
+        styles = __assign(__assign({}, styles), (playerClassImp === "lty-playbtn-YT" ? {
+            '--aspect-button': "".concat(aspectButtonH, " / ").concat(aspectButtonW),
+            '--size-button': "".concat(sizeButton, "%"),
+            '--size-tutton-triangle': "".concat(sizeButtonTriangle, "%")
+        } : {}));
+        return styles;
     };
     var addIframe = function () {
         if (iframe)
@@ -94,9 +115,7 @@ function LiteYouTubeEmbedComponent(props, ref) {
             adNetworkImp && (React.createElement(React.Fragment, null,
                 React.createElement("link", { rel: "preconnect", href: "https://static.doubleclick.net" }),
                 React.createElement("link", { rel: "preconnect", href: "https://googleads.g.doubleclick.net" })))))),
-        React.createElement(ContainerElement, { onPointerOver: warmConnections, onClick: addIframe, className: "".concat(wrapperClassImp, " ").concat(iframe ? activatedClassImp : ""), "data-title": videoTitle, style: __assign({ backgroundImage: "url(".concat(posterUrl, ")") }, {
-                '--aspect-ratio': "".concat((aspectHeight / aspectWidth) * 100, "%"),
-            }) },
+        React.createElement(ContainerElement, { onPointerOver: warmConnections, onClick: addIframe, className: "".concat(wrapperClassImp, " ").concat(iframe ? activatedClassImp : ""), "data-title": videoTitle, style: __assign(__assign({ backgroundImage: "url(".concat(posterUrl, ")") }, __assign({}, (dinamicStyles()))), style) },
             React.createElement("button", { type: "button", className: playerClassImp, "aria-label": "".concat(announceWatch, " ").concat(videoTitle) }),
             iframe && (React.createElement("iframe", { ref: ref, className: iframeClassImp, title: videoTitle, width: "560", height: "315", frameBorder: "0", allow: "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture", allowFullScreen: true, src: iframeSrc })))));
 }
